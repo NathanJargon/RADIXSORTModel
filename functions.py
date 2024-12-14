@@ -39,6 +39,58 @@ def counting_sort(arr, exp):
     for i in range(n):
         arr[i] = output[i]
 
+def sort_data(x_entries, result_label, graph_frame):
+    try:
+        x, _ = get_data(x_entries, None)
+        start_time = time.time()
+        sorted_x = radix_sort(x)
+        end_time = time.time()
+        time_complexity = end_time - start_time
+        space_complexity = len(x) * 4
+        result_label.config(text=f"Sorted Data:\n{sorted_x}\n\nTime Complexity: {time_complexity:.6f} seconds\n\nSpace Complexity: {space_complexity} bytes")
+        
+        # Visualize the sorted dengue trends
+        visualize_dengue_trends(sorted_x, graph_frame)
+        
+        # Visualize time and space complexity
+        visualize_complexity(time_complexity, space_complexity, graph_frame)
+    except Exception as e:
+        messagebox.showerror("Error", str(e))
+
+def visualize_dengue_trends(data, graph_frame):
+    years = list(range(2016, 2022))
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.plot(years, data[:len(years)], marker='o')
+    ax.set_title('Dengue Trends from 2016 to 2021')
+    ax.set_xlabel('Year')
+    ax.set_ylabel('Dengue Cases')
+    ax.grid(True)
+    
+    for widget in graph_frame.winfo_children():
+        widget.destroy()
+    canvas = FigureCanvasTkAgg(fig, master=graph_frame)
+    canvas.draw()
+    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+
+def visualize_complexity(time_complexity, space_complexity, graph_frame):
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.bar(['Time Complexity', 'Space Complexity'], [time_complexity, space_complexity])
+    ax.set_title('Time and Space Complexity')
+    ax.set_ylabel('Value')
+    
+    canvas = FigureCanvasTkAgg(fig, master=graph_frame)
+    canvas.draw()
+    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+
+def get_data(x_entries, y_entry):
+    x_data = [entry.get("1.0", tk.END).strip() for entry in x_entries]
+    y_data = y_entry.get("1.0", tk.END).strip() if y_entry else ""
+    if not all(x_data) or (y_entry and not y_data):
+        raise ValueError("X and Y data cannot be empty")
+    x = [float(item) for sublist in x_data for item in sublist.split()]
+    y = list(map(float, y_data.split())) if y_entry else []
+    return x, y
+
 def calculate_correlation(x_entries, y_entry, result_label, graph_frame):
     try:
         if len(x_entries) != 1:
@@ -123,27 +175,6 @@ def calculate_anova(x_entries, result_label):
         result_label.config(text=f"ANOVA F-value: {f_val}\n\np-value: {p_val}")
     except Exception as e:
         messagebox.showerror("Error", str(e))
-        
-def sort_data(x_entries, result_label):
-    try:
-        x, _ = get_data(x_entries, None)
-        start_time = time.time()
-        sorted_x = radix_sort(x)
-        end_time = time.time()
-        time_complexity = end_time - start_time
-        space_complexity = len(x) * 4
-        result_label.config(text=f"Sorted Data:\n{sorted_x}\n\nTime Complexity: {time_complexity:.6f} seconds\n\nSpace Complexity: {space_complexity} bytes")
-    except Exception as e:
-        messagebox.showerror("Error", str(e))
-
-def get_data(x_entries, y_entry):
-    x_data = [entry.get("1.0", tk.END).strip() for entry in x_entries]
-    y_data = y_entry.get("1.0", tk.END).strip() if y_entry else ""
-    if not all(x_data) or (y_entry and not y_data):
-        raise ValueError("X and Y data cannot be empty")
-    x = [float(item) for sublist in x_data for item in sublist.split()]
-    y = list(map(float, y_data.split())) if y_entry else []
-    return x, y
 
 def plot_graph(x, y, title, graph_frame, model=None):
     for widget in graph_frame.winfo_children():

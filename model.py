@@ -12,8 +12,7 @@ from functions import (
     calculate_regression,
     calculate_anova,
     calculate_mse,
-    sort_data,
-    initialize_blank_graph
+    sort_data
 )
 
 def generate_random_data(entry):
@@ -24,7 +23,7 @@ def generate_random_data(entry):
         entry.insert(tk.END, ' '.join(map(str, random_data)))
 
 root = tk.Tk()
-root.title("Data Analysis Tool")
+root.title("Radix Sort Model")
 root.geometry("1200x900")
 
 input_frame = tk.Frame(root)
@@ -89,11 +88,9 @@ tk.Button(button_frame, text="Correlation", command=lambda: calculate_correlatio
 tk.Button(button_frame, text="Regression", command=lambda: calculate_regression(x_entries, y_entry, result_label, graph_frame)).pack(side=tk.LEFT, padx=5)
 tk.Button(button_frame, text="ANOVA", command=lambda: calculate_anova(x_entries, result_label)).pack(side=tk.LEFT, padx=5)
 tk.Button(button_frame, text="MSE", command=lambda: calculate_mse(x_entries, y_entry, result_label)).pack(side=tk.LEFT, padx=5)
-tk.Button(button_frame, text="Radix Sort Data", command=lambda: sort_data(x_entries, result_label)).pack(side=tk.LEFT, padx=5)
+tk.Button(button_frame, text="Radix Sort Data", command=lambda: sort_data(x_entries, result_label, graph_frame)).pack(side=tk.LEFT, padx=5)
 
 graph_frame = tk.Frame(root)
 graph_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=1)
-
-initialize_blank_graph(graph_frame)
 
 root.mainloop()
